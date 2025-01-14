@@ -1,0 +1,29 @@
+# Node.js dependencies
+/node_modules/
+
+# Directorios de build y distribución
+/dist/
+/build/
+
+/# Archivos de log
+*.log
+
+# Archivos de configuración específicos de editores
+.vscode/
+.idea/
+
+# Archivos temporales
+*.tmp
+*.swp
+
+# Dependencias específicas de entornos de desarrollo (si usas npm o yarn)
+package-lock.json
+yarn.lock
+
+# Archivos del sistema operativo
+.DS_Store       # macOS
+Thumbs.db       # Windows
+
+# Otros archivos generados (si usas herramientas como Babel, Webpack, etc.)
+/coverage/       # Carpeta de cobertura de pruebas (si usas herramientas como Jest)
+/*.bak           # Archivos de respaldo
