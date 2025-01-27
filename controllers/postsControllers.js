@@ -4,7 +4,7 @@ import Category from '../models/Category.js'
 const addPost = async (req, res) => {
 
     //Prevenir duplicados
-    const { namePost, categoryPost } = req.body;
+    const { namePost, categoryPost, imagePost } = req.body;
 
     try {
         const postExist = await Post.findOne({ namePost, categoryPost });
@@ -12,7 +12,22 @@ const addPost = async (req, res) => {
             const error = new Error('Post already exists');
             return res.status(400).json({ msg: error.message })
         }
-        const post = new Post(req.body);
+
+        let imageUrl="";
+        if(imagePost){
+            const uploadResult = await cloudinary.uploader.upload(imagePost,{
+                public_id: `posts/${namePost}`,
+                folder: 'posts/'
+            })
+            imageUrl = uploadResult.secure_url;
+        }
+
+
+        const post = new Post({
+            ...req.body,
+            imagePost: imageUrl,
+        });
+
         const savePost = await post.save();
 
         let category = await Category.findOne({ nameCategory: categoryPost });
@@ -41,12 +56,20 @@ const updatePost = async (req, res)=>{
         //Actualizar post
         post.namePost = req.body.namePost || post.namePost;
         post.descriptionPost = req.body.descriptionPost || post.descriptionPost;
-        post.imagePost = req.body.imagePost || post.imagePost;
         post.datePost = req.body.datePost || post.datePost;
         post.nameUser = req.body.nameUser || post.nameUser;
         post.ratingPost = req.body.ratingPost || post.ratingPost;
         post.categoryPost = req.body.categoryPost || post.categoryPost;
         post.subCategory = req.body.subCategory || post.subCategory;
+
+        if(req.body.imagePost){
+            const uploadResult = await cloudinary.uploader.upload(req.body.imagePost, {
+                public_id: `posts/${req.body.namePost}`,
+                folder: 'posts/'
+            })
+            post.imagePost = uploadResult.secure_url;
+        }
+
        try {
          const postUpdated = await post.save();
         res.json(postUpdated);
